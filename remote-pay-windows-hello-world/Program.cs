@@ -28,12 +28,30 @@ namespace remote_pay_windows_hello_world
 
         class YourListener : DefaultCloverConnectorListener
         {
+            ICloverConnector cloverConnector;
             public YourListener(ICloverConnector cc) : base(cc) 
             {
+                cloverConnector = cc;
             }
 
             public override void OnConfirmPaymentRequest(ConfirmPaymentRequest request)
             {
+                for (int i = 0; i < request.Challenges.Count; i++)
+                {
+                    if (request.Challenges[i].type == ChallengeType.DUPLICATE_CHALLENGE)
+                    {
+                        // handle the challenge, "This might be a duplicate payment, continue?"
+                    }
+                    
+                    if (request.Challenges[i].type == ChallengeType.OFFLINE_CHALLENGE)
+                    {
+                        // handle an offline payment request challenge
+                    }
+                }
+
+
+                // for the sake of a hello world demo, just accept all payments
+                this.cloverConnector.AcceptPayment(request.Payment);
             }
 
             public override void OnSaleResponse(SaleResponse response)
