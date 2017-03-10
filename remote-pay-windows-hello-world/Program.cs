@@ -36,6 +36,7 @@ namespace remote_pay_windows_hello_world
 
             public override void OnConfirmPaymentRequest(ConfirmPaymentRequest request)
             {
+                // there are only two possible challenges - DUPLICATE_CHALLENGE and OFFLINE_CHALLENGE 
                 for (int i = 0; i < request.Challenges.Count; i++)
                 {
                     if (request.Challenges[i].type == ChallengeType.DUPLICATE_CHALLENGE)
@@ -49,7 +50,7 @@ namespace remote_pay_windows_hello_world
                     }
                 }
 
-
+           
                 // for the sake of a hello world demo, just accept all payments
                 this.cloverConnector.AcceptPayment(request.Payment);
             }
