@@ -1,19 +1,23 @@
 ﻿using System;
+using System.IO;
+using System.Drawing;
+using System.Collections.Generic;
 using com.clover.remotepay.sdk;
 using com.clover.remotepay.transport;
 using System.Threading;
+
 
 namespace remote_pay_windows_hello_world
 {
     class ProgramCopy
     {
-        static void Main(string[] args)
+        static void Main1(string[] args)
         {
             int amountCharged = 0103;
             string invoiceNumber = "aa123f";
             ICloverConnector cloverConnector;
             Console.Write("initializing");
-            CloverDeviceConfiguration USBConfig = new USBCloverDeviceConfiguration(null, "com.fromuthtennis.ustaproshop", false, 0000);
+            CloverDeviceConfiguration USBConfig = new USBCloverDeviceConfiguration(null, "com.fromuthtennis.ustaproshop", false, 2);
 
             cloverConnector = new CloverConnector(USBConfig);
             cloverConnector.AddCloverConnectorListener(new YourListener(cloverConnector));
@@ -62,7 +66,7 @@ namespace remote_pay_windows_hello_world
                 {
                     if (request.Challenges[i].type == ChallengeType.DUPLICATE_CHALLENGE)
                     {
-                        // handle the challenge, "This might be a duplicate payment, continue?"
+
                     }
 
                     if (request.Challenges[i].type == ChallengeType.OFFLINE_CHALLENGE)
@@ -78,6 +82,7 @@ namespace remote_pay_windows_hello_world
 
             public override void OnVerifySignatureRequest(VerifySignatureRequest request)
             {
+                Console.Write(request);
                 request.Accept();
             }
 
@@ -90,10 +95,12 @@ namespace remote_pay_windows_hello_world
                 {
                     localcc.ResetDevice();
                     Console.Write("fasndf\nadjfh\nasdfjkha\nasjldf\r\naskjdfh");
+                
                 }
-                else
+                else 
                 {
-                    localcc.ShowMessage("Order Canceled");
+                    
+                    localcc.ShowMessage("Order Canceled duplicate");
                     Thread.Sleep(3000);
                     localcc.ShowWelcomeScreen();
 
@@ -105,8 +112,10 @@ namespace remote_pay_windows_hello_world
             public override void OnDeviceReady(MerchantInfo merchantInfo)
             {
                 localcc.ResetDevice();
+
                 int amountCharged = 503;
-                string invoiceNumber = "aa1231";
+                Random rand = new Random();
+                string invoiceNumber = rand.Next(1000, 5000).ToString();
                 SaleRequest sarequest = new SaleRequest();
                 sarequest.Amount = amountCharged;
                 sarequest.ExternalId = invoiceNumber; //KAD46SD3SFR7P
@@ -117,14 +126,15 @@ namespace remote_pay_windows_hello_world
                 sarequest.CardEntryMethods |= CloverConnector.CARD_ENTRY_METHOD_NFC_CONTACTLESS;
 
                 sarequest.DisablePrinting = true;
+
                 sarequest.ApproveOfflinePaymentWithoutPrompt = true;
                 sarequest.AllowOfflinePayment = true;
 
 
                 localcc.Sale(sarequest);
-                VerifySignatureMessage a = new VerifySignatureMessage();
-                VerifySignatureRequest vsrequest = new VerifySignatureRequest();
-                localcc.AcceptSignature(vsrequest);
+                //VerifySignatureMessage a = new VerifySignatureMessage();
+                //VerifySignatureRequest vsrequest = new VerifySignatureRequest();
+                //localcc.AcceptSignature(vsrequest);
             }
         }
     }
