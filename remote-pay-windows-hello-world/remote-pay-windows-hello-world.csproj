@@ -34,22 +34,19 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="CloverConnector">
-      <HintPath>..\..\..\..\remote-pay-windows\examples\CloverExamplePOS\bin\Debug\CloverConnector.dll</HintPath>
+      <HintPath>..\..\remote-pay-windows-master\lib\CloverConnector\bin\Release\CloverConnector.dll</HintPath>
     </Reference>
     <Reference Include="CloverWindowsSDK">
-      <HintPath>..\..\..\..\remote-pay-windows\lib\CloverWindowsTransport\bin\Debug\CloverWindowsSDK.dll</HintPath>
-    </Reference>
-    <Reference Include="CloverWindowsSDKServiceClient">
-      <HintPath>..\..\..\..\remote-pay-windows\examples\CloverExamplePOS\bin\Debug\CloverWindowsSDKServiceClient.dll</HintPath>
+      <HintPath>..\..\remote-pay-windows-master - Copy\lib\CloverWindowsTransport\bin\Debug\CloverWindowsSDK.dll</HintPath>
     </Reference>
     <Reference Include="CloverWindowsTransport">
-      <HintPath>..\..\..\..\remote-pay-windows\lib\CloverWindowsTransport\bin\Debug\CloverWindowsTransport.dll</HintPath>
+      <HintPath>..\..\remote-pay-windows-master - Copy\lib\CloverWindowsTransport\bin\Debug\CloverWindowsTransport.dll</HintPath>
     </Reference>
     <Reference Include="LibUsbDotNet">
-      <HintPath>..\..\..\..\remote-pay-windows\lib\CloverConnector\bin\Debug\LibUsbDotNet.dll</HintPath>
+      <HintPath>..\..\remote-pay-windows-master - Copy\lib\CloverWindowsTransport\bin\Debug\LibUsbDotNet.dll</HintPath>
     </Reference>
     <Reference Include="Newtonsoft.Json">
-      <HintPath>..\..\..\..\remote-pay-windows\lib\CloverConnector\bin\Debug\Newtonsoft.Json.dll</HintPath>
+      <HintPath>..\..\remote-pay-windows-master - Copy\lib\CloverWindowsTransport\bin\Debug\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -60,11 +57,12 @@
     <Reference Include="System.Net.Http" />
     <Reference Include="System.Xml" />
     <Reference Include="WebSocket4Net">
-      <HintPath>..\..\..\..\remote-pay-windows\lib\CloverConnector\bin\Debug\WebSocket4Net.dll</HintPath>
+      <HintPath>..\..\remote-pay-windows-master - Copy\lib\CloverWindowsTransport\bin\Debug\WebSocket4Net.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Program.cs" />
+    <Compile Include="programCopy.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
