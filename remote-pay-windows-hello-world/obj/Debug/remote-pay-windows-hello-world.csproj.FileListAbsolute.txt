@@ -1,13 +1,5 @@
-H:\remote-pay-windows-hello-world-master\remote-pay-windows-hello-world\bin\Debug\remote-pay-windows-hello-world.exe.config
 H:\remote-pay-windows-hello-world-master\remote-pay-windows-hello-world\obj\Debug\remote-pay-windows-hello-world.csprojResolveAssemblyReference.cache
-H:\remote-pay-windows-hello-world-master\remote-pay-windows-hello-world\bin\Debug\remote-pay-windows-hello-world.exe
-H:\remote-pay-windows-hello-world-master\remote-pay-windows-hello-world\bin\Debug\remote-pay-windows-hello-world.pdb
 H:\remote-pay-windows-hello-world-master\remote-pay-windows-hello-world\bin\Debug\CloverConnector.dll
-H:\remote-pay-windows-hello-world-master\remote-pay-windows-hello-world\bin\Debug\CloverWindowsSDK.dll
-H:\remote-pay-windows-hello-world-master\remote-pay-windows-hello-world\bin\Debug\CloverWindowsTransport.dll
-H:\remote-pay-windows-hello-world-master\remote-pay-windows-hello-world\bin\Debug\LibUsbDotNet.dll
-H:\remote-pay-windows-hello-world-master\remote-pay-windows-hello-world\bin\Debug\Newtonsoft.Json.dll
-H:\remote-pay-windows-hello-world-master\remote-pay-windows-hello-world\bin\Debug\WebSocket4Net.dll
 H:\remote-pay-windows-hello-world-master\remote-pay-windows-hello-world\bin\Debug\CloverConnector.pdb
 H:\remote-pay-windows-hello-world-master\remote-pay-windows-hello-world\bin\Debug\CloverWindowsSDK.pdb
 H:\remote-pay-windows-hello-world-master\remote-pay-windows-hello-world\bin\Debug\CloverWindowsSDK.xml
@@ -15,5 +7,8 @@ H:\remote-pay-windows-hello-world-master\remote-pay-windows-hello-world\bin\Debu
 H:\remote-pay-windows-hello-world-master\remote-pay-windows-hello-world\bin\Debug\LibUsbDotNet.xml
 H:\remote-pay-windows-hello-world-master\remote-pay-windows-hello-world\bin\Debug\Newtonsoft.Json.pdb
 H:\remote-pay-windows-hello-world-master\remote-pay-windows-hello-world\bin\Debug\Newtonsoft.Json.xml
-H:\remote-pay-windows-hello-world-master\remote-pay-windows-hello-world\obj\Debug\remote-pay-windows-hello-world.exe
-H:\remote-pay-windows-hello-world-master\remote-pay-windows-hello-world\obj\Debug\remote-pay-windows-hello-world.pdb
+H:\remote-pay-windows-hello-world-master\remote-pay-windows-hello-world\bin\Debug\nona_clover_integration.exe.config
+H:\remote-pay-windows-hello-world-master\remote-pay-windows-hello-world\bin\Debug\nona_clover_integration.exe
+H:\remote-pay-windows-hello-world-master\remote-pay-windows-hello-world\bin\Debug\nona_clover_integration.pdb
+H:\remote-pay-windows-hello-world-master\remote-pay-windows-hello-world\obj\Debug\nona_clover_integration.exe
+H:\remote-pay-windows-hello-world-master\remote-pay-windows-hello-world\obj\Debug\nona_clover_integration.pdb
