@@ -12,3 +12,6 @@ H:\remote-pay-windows-hello-world-master\remote-pay-windows-hello-world\bin\Debu
 H:\remote-pay-windows-hello-world-master\remote-pay-windows-hello-world\bin\Debug\nona_clover_integration.pdb
 H:\remote-pay-windows-hello-world-master\remote-pay-windows-hello-world\obj\Debug\nona_clover_integration.exe
 H:\remote-pay-windows-hello-world-master\remote-pay-windows-hello-world\obj\Debug\nona_clover_integration.pdb
+H:\remote-pay-windows-hello-world\remote-pay-windows-hello-world\bin\Debug\nona_clover_integration.exe.config
+H:\remote-pay-windows-hello-world\remote-pay-windows-hello-world\obj\Debug\nona_clover_integration.exe
+H:\remote-pay-windows-hello-world\remote-pay-windows-hello-world\obj\Debug\nona_clover_integration.pdb

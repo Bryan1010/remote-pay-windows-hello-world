@@ -24,8 +24,10 @@ namespace remote_pay_windows_hello_world
 
 
             Thread.Sleep(5000);
-            do { 
-                if (cloverConnector.IsReady) {
+            do
+            {
+                if (cloverConnector.IsReady)
+                {
                     if (File.Exists(startFilePath))
                     {
                         string startFileText = File.ReadAllText(startFilePath);
@@ -40,11 +42,25 @@ namespace remote_pay_windows_hello_world
                                     StartSale(cloverConnector, startFileContent[1], Int32.Parse(startFileContent[2]));
                                     break;
                                 }
-                            case "refund":
-                            case "REFUND":
-                            case "Refund":
+                            case "mrefund":
+                            case "MREFUND":
+                            case "MRefund":
                                 {
                                     StartRefund(cloverConnector, startFileContent[1], Int32.Parse(startFileContent[2]));
+                                    break;
+                                }
+                            case "fdrefund":
+                            case "FDREFUND":
+                            case "FDRefund":
+                                {
+                                    StartDirectRefund(cloverConnector, startFileContent[1], startFileContent[2]);
+                                    break;
+                                }
+                            case "pdrefund":
+                            case "PDREFUND":
+                            case "PDRefund":
+                                {
+                                    StartDirectRefund(cloverConnector, startFileContent[1], startFileContent[2], Int32.Parse(startFileContent[3]));
                                     break;
                                 }
                             case "cancel":
@@ -57,20 +73,46 @@ namespace remote_pay_windows_hello_world
                                     break;
                                 }
                         }
+
+                        File.Delete(startFilePath);
+
+
                     }
                     Thread.Sleep(3000);
                 }
             } while (true);
+        }
 
-           
+
+        public static void StartDirectRefund(ICloverConnector cloverConnector, string paymentId, string orderId, int amt)
+        {
+            cloverConnector.ResetDevice();
+            RefundPaymentRequest refundRequest = new RefundPaymentRequest();
+            refundRequest.PaymentId = paymentId;
+            refundRequest.OrderId = orderId;
+            refundRequest.Amount = amt;
+            
+
+            cloverConnector.RefundPayment(refundRequest);
+        }
+
+
+        public static void StartDirectRefund(ICloverConnector cloverConnector, string paymentId, string orderId)
+        {
+            cloverConnector.ResetDevice();
+            RefundPaymentRequest refundRequest = new RefundPaymentRequest();
+            refundRequest.PaymentId = paymentId;
+            refundRequest.OrderId = orderId;
+            refundRequest.FullRefund = true;
+
+            cloverConnector.RefundPayment(refundRequest);
         }
 
         public static void StartSale(ICloverConnector cloverConnector, string invNum, int amt)
         {
             
             cloverConnector.ResetDevice();
-            Random rand = new Random();
-            string invoiceNumber = rand.Next(1000, 5000).ToString();
+            string invoiceNumber = invNum;
             SaleRequest sarequest = new SaleRequest();
             sarequest.Amount = amt;
             sarequest.ExternalId = invoiceNumber;
@@ -140,13 +182,13 @@ namespace remote_pay_windows_hello_world
                     {
                         
                     }
-                    //if (request.Payment.offline)
-                    //{
-                    //    deviceOffline = true;
-                    //    cloverConnector.ShowMessage("TRANSACTION ERROR:\nDEVICE OFFLINE");
-                    //    File.WriteAllText(SaleFilePath, "FAILED\tOFFLINE");
-                    //    this.cloverConnector.RejectPayment(request.Payment, request.Challenges[i]);
-                    //}
+                    if (request.Payment.offline)
+                    {
+                        deviceOffline = true;
+                        cloverConnector.ShowMessage("TRANSACTION ERROR:\nDEVICE OFFLINE");
+                        File.WriteAllText(SaleFilePath, "FAILED\tOFFLINE");
+                        this.cloverConnector.RejectPayment(request.Payment, request.Challenges[i]);
+                    }
                 }
                 
                 this.cloverConnector.AcceptPayment(request.Payment);               
@@ -213,20 +255,19 @@ namespace remote_pay_windows_hello_world
                 {
                     // payment was successful
                     // do something with response.Payment
-                    output = "APPROVED\t" + response.Payment.amount + "\t";
+                    output = "APPROVED\t" + response.Payment.amount + "\t" + response.Payment.id + "\t" + response.Payment.order.id + "\t";
                     cloverMessage = "TRANSACTION APPROVED";
                 }
-
                 else 
                 {
                     output = "FAILED\t" + response.Result + "\t";
                     cloverMessage = "TRANSACTION " + response.Result;
                 }
-                //if (deviceOffline)
-                //{
-                //    output = "FAILED\tOFFLINE\t";
-                //    cloverMessage = "TRANSACTION FAILED:\nDEVICE OFFLINE";
-                //}
+                if (deviceOffline)
+                {
+                    output = "FAILED\tOFFLINE\t";
+                    cloverMessage = "TRANSACTION FAILED:\nDEVICE OFFLINE";
+                }
                 
 
                 if (!hasSignature)
@@ -239,7 +280,35 @@ namespace remote_pay_windows_hello_world
                 hasSignature = false;
             }
 
-            
+            /*
+            public override void OnRefundPaymentResponse(RefundPaymentResponse response)
+            {
+                //For some reason Boolean values of success and result and responses are flipped true and false
+                output = "";
+                if (response.Success)
+                {
+                    
+                    output = "APPROVED\t" + "\t" + response.Reason + "\t" + response.Refund.amount.ToString() +
+                        "\t" + response.Message +"\t";
+                }
+                else
+                {
+                    output = "FAILED\t" + response.Result + "\t" + response.Reason + "\t" + response.Success;
+
+                }
+                
+
+                if (!hasSignature)
+                    output += "NONE\t";
+
+                File.WriteAllText(SaleFilePath, output);
+                cloverConnector.ShowMessage("REFUND " + response.Result);
+                Thread.Sleep(2000);
+                hasSignature = false;
+                cloverConnector.ShowWelcomeScreen();
+            }
+            */
+
 
             public override void OnManualRefundResponse(ManualRefundResponse response)
             {
@@ -261,8 +330,8 @@ namespace remote_pay_windows_hello_world
                 File.WriteAllText(SaleFilePath, output);
                 cloverConnector.ShowMessage("TRANSACTION " + response.Result);
                 Thread.Sleep(1800);
-                cloverConnector.ShowWelcomeScreen();
                 hasSignature = false;
+                cloverConnector.ShowWelcomeScreen();
             }
 
 
