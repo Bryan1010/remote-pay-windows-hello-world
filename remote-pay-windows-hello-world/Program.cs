@@ -23,14 +23,21 @@ namespace remote_pay_windows_hello_world
             cloverConnector.AddCloverConnectorListener(new YourListener(cloverConnector));
             cloverConnector.InitializeConnection();
 
+            DateTime timeStamp = DateTime.Now;
+
 
             Thread.Sleep(5000);
             do
             {
                 if (cloverConnector.IsReady)
                 {
+                    //output a clover isConnected file
+                    File.WriteAllText("c:/clover/isConnected.txt", DateTime.Now.ToString());
+
+                    //If the SaleRequest is made, proceed, else keep repeatig loop.
                     if (File.Exists(startFilePath))
                     {
+
                         string startFileText = File.ReadAllText(startFilePath);
                         File.Delete(startFilePath);
                         string[] startFileContent = startFileText.Split('\t');
@@ -40,8 +47,8 @@ namespace remote_pay_windows_hello_world
                             case "Sale":
                             case "sale":
                                 {
-                    StartOrder(cloverConnector);
-                                    //StartSale(cloverConnector, startFileContent[1], Int32.Parse(startFileContent[2]));
+                                    //StartOrder(cloverConnector);
+                                    StartSale(cloverConnector, startFileContent[1], Int32.Parse(startFileContent[2]));
                                     break;
                                 }
                             case "mrefund":
@@ -93,58 +100,6 @@ namespace remote_pay_windows_hello_world
             } while (true);
         }
 
-
-        public static void StartDirectRefund(ICloverConnector cloverConnector, string paymentId, string orderId, int amt)
-        {
-            //cloverConnector.ResetDevice();
-            RefundPaymentRequest refundRequest = new RefundPaymentRequest();
-            refundRequest.PaymentId = paymentId;
-            refundRequest.OrderId = orderId;
-            refundRequest.Amount = amt;
-            
-
-            cloverConnector.RefundPayment(refundRequest);
-        }
-
-
-        public static void StartDirectRefund(ICloverConnector cloverConnector, string paymentId, string orderId)
-        {
-            //cloverConnector.ResetDevice();
-            RefundPaymentRequest refundRequest = new RefundPaymentRequest();
-            refundRequest.PaymentId = paymentId;
-            refundRequest.OrderId = orderId;
-            refundRequest.FullRefund = true;
-
-
-            cloverConnector.RefundPayment(refundRequest);
-        }
-
-        //Experimenting on displaying orders
-        public static void StartOrder(ICloverConnector cloverConnector) {
-            DisplayOrder o = new DisplayOrder();
-            DisplayLineItem l = new DisplayLineItem();
-            DisplayPayment p = new DisplayPayment();
-            l.name = "hello";
-            l.price = "1234";
-            o.addDisplayLineItem(l);
-            l.name = "heasfasdllo";
-            l.price = "1234";
-            o.addDisplayLineItem(l);
-            o.subtotal = l.price;
-            o.tax = "0";
-            o.total = o.subtotal;
-            o.currency = "USD";
-            o.
-
-            p.amount = l.price;
-
-            o.addDisplayPayment(p);
-
-
-            
-            cloverConnector.ShowDisplayOrder(o);
-        }
-
         public static void StartSale(ICloverConnector cloverConnector, string invNum, int amt)
         {
             
@@ -189,6 +144,53 @@ namespace remote_pay_windows_hello_world
             cloverConnector.ManualRefund(request);
 
 
+        }
+
+        public static void StartDirectRefund(ICloverConnector cloverConnector, string paymentId, string orderId, int amt)
+        {
+            //cloverConnector.ResetDevice();
+            RefundPaymentRequest refundRequest = new RefundPaymentRequest();
+            refundRequest.PaymentId = paymentId;
+            refundRequest.OrderId = orderId;
+            refundRequest.Amount = amt;
+
+
+            cloverConnector.RefundPayment(refundRequest);
+        }
+
+
+        public static void StartDirectRefund(ICloverConnector cloverConnector, string paymentId, string orderId)
+        {
+            //cloverConnector.ResetDevice();
+            RefundPaymentRequest refundRequest = new RefundPaymentRequest();
+            refundRequest.PaymentId = paymentId;
+            refundRequest.OrderId = orderId;
+            refundRequest.FullRefund = true;
+
+
+            cloverConnector.RefundPayment(refundRequest);
+        }
+
+        //Experimenting on displaying orders
+        //NOT READY YET
+        public static void StartOrder(ICloverConnector cloverConnector)
+        {
+            cloverConnector.ResetDevice();
+            DisplayOrder o = new DisplayOrder();
+            DisplayLineItem l = new DisplayLineItem();
+            DisplayPayment p = new DisplayPayment();
+            l.name = "hello";
+            l.price = "1234";
+            o.addDisplayLineItem(l);
+
+            o.subtotal = l.price;
+            //o.tax = "0";
+            o.total = o.subtotal + o.tax;
+            o.currency = "USD";
+            o.title = "My Order";
+
+            p.amount = o.total;
+            cloverConnector.ShowDisplayOrder(o);
         }
 
 
@@ -240,8 +242,7 @@ namespace remote_pay_windows_hello_world
                 {
                     hasSignature = true;
                     output += "[";
-                    for (int i = 0; i < stroke.points.Count; i++)
-                    {
+                    for (int i = 0; i < stroke.points.Count; i++){
                         output += "[" + stroke.points[i].x + "," + stroke.points[i].y + "]";
                     }
                     output += "]";
@@ -255,7 +256,6 @@ namespace remote_pay_windows_hello_world
             public  void verifySignature(VerifySignatureRequest request, string path)
             {
                 //validating the file for signature validation
-                //String path = "c:/clover/SignatureConfirm";
                 bool flag = true;
                 while (flag)
                 {
@@ -286,7 +286,7 @@ namespace remote_pay_windows_hello_world
                             default:
                                 {
                                     cloverConnector.ShowMessage("Invalid Response");
-                                    break;
+                                    Console.WriteLine("Invalid Response");
                                     flag = false;
                                     break;
                                 }
@@ -339,8 +339,8 @@ namespace remote_pay_windows_hello_world
                 if (response.Success)
                 {
 
-                    output = "APPROVED\t" + response.Result + "\t" + response.Reason + "\t" + response.Success 
-                        + "\t" + response.Message + "\t" + response.Refund.amount.ToString() + "\t";
+                    output = "APPROVED\t" + response.Result + "\t" + response.Success + "\t" + 
+                        "\t" + response.Refund.amount.ToString() + "\t" + response.PaymentId + "\t" + response.OrderId + "\t";
                 }
                 else
                 {
@@ -391,8 +391,12 @@ namespace remote_pay_windows_hello_world
             // is ready to communicate before calling other methods
             public override void OnDeviceReady(MerchantInfo merchantInfo)
             {
-                //cloverConnector.ResetDevice();
                 cloverConnector.ShowWelcomeScreen();
+            }
+
+            public override void OnDeviceDisconnected()
+            {
+                File.WriteAllText("c:/clover/notConnected.txt", DateTime.Now.ToString());
             }
         }
     }
