@@ -32,7 +32,16 @@ namespace remote_pay_windows_hello_world
                 if (cloverConnector.IsReady)
                 {
                     //output a clover isConnected file
-                    File.WriteAllText("c:/clover/isConnected.txt", DateTime.Now.ToString());
+                    if (File.Exists("c:/clover/isConnected.txt"))
+                    {
+                        File.WriteAllText("c:/clover/isConnected.txt", DateTime.Now.ToString());
+                    }
+                    else
+                    {
+                        File.Create("c:/clover/isConnected.txt");
+                        File.WriteAllText("c:/clover/isConnected.txt", DateTime.Now.ToString());
+                    }
+
 
                     //If the SaleRequest is made, proceed, else keep repeatig loop.
                     if (File.Exists(startFilePath))
@@ -41,7 +50,7 @@ namespace remote_pay_windows_hello_world
                         string startFileText = File.ReadAllText(startFilePath);
                         File.Delete(startFilePath);
                         string[] startFileContent = startFileText.Split('\t');
-                        switch (startFileContent[0])
+                        switch (startFileContent[0].ToLower())
                         {
                             case "SALE":
                             case "Sale":
@@ -54,6 +63,7 @@ namespace remote_pay_windows_hello_world
                             case "mrefund":
                             case "MREFUND":
                             case "MRefund":
+                            case "refund":
                                 {
                                     StartRefund(cloverConnector, startFileContent[1], Int32.Parse(startFileContent[2]));
                                     break;
@@ -84,7 +94,7 @@ namespace remote_pay_windows_hello_world
                             default:
                                 {
                                     cloverConnector.ShowMessage("Invalid Response");
-                                    Thread.Sleep(1500);
+                                    Thread.Sleep(3000);
                                     cloverConnector.ShowWelcomeScreen();
                                     break; 
                                 }
@@ -221,13 +231,13 @@ namespace remote_pay_windows_hello_world
                     {
                         
                     }
-                    if (request.Payment.offline)
-                    {
-                        deviceOffline = true;
-                        cloverConnector.ShowMessage("TRANSACTION ERROR:\nDEVICE OFFLINE");
-                        File.WriteAllText(SaleFilePath, "FAILED\tOFFLINE");
-                        this.cloverConnector.RejectPayment(request.Payment, request.Challenges[i]);
-                    }
+                    //if (request.Payment.offline)
+                    //{
+                    //    deviceOffline = true;
+                    //    cloverConnector.ShowMessage("TRANSACTION ERROR:\nDEVICE OFFLINE");
+                    //    File.WriteAllText(SaleFilePath, "FAILED\tOFFLINE");
+                    //    this.cloverConnector.RejectPayment(request.Payment, request.Challenges[i]);
+                    //}
                 }
                 
                 this.cloverConnector.AcceptPayment(request.Payment);               

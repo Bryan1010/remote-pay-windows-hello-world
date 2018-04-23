@@ -1,11 +1,11 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
-VisualStudioVersion = 14.0.25420.1
+# Visual Studio 15
+VisualStudioVersion = 15.0.27428.2015
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "remote-pay-windows-hello-world", "remote-pay-windows-hello-world\remote-pay-windows-hello-world.csproj", "{00C3E208-50A1-494A-A444-C9F0A86897D7}"
 EndProject
-Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "Clover Nona Integration setup", "SetupWizard\Clover Nona Integration setup\Clover Nona Integration setup.vdproj", "{41FFEB8B-5D33-4053-8877-C512E943C3D4}"
+Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "Setup", "Setup\Setup.vdproj", "{E3AA43CE-8C05-42E3-A0DF-49157F064588}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,16 +15,15 @@ Global
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{00C3E208-50A1-494A-A444-C9F0A86897D7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{00C3E208-50A1-494A-A444-C9F0A86897D7}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{00C3E208-50A1-494A-A444-C9F0A86897D7}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{00C3E208-50A1-494A-A444-C9F0A86897D7}.Release|Any CPU.Build.0 = Release|Any CPU
-		{41FFEB8B-5D33-4053-8877-C512E943C3D4}.Debug|Any CPU.ActiveCfg = Debug
-		{41FFEB8B-5D33-4053-8877-C512E943C3D4}.Release|Any CPU.ActiveCfg = Release
+		{00C3E208-50A1-494A-A444-C9F0A86897D7}.Release|Any CPU.ActiveCfg = Debug|Any CPU
+		{00C3E208-50A1-494A-A444-C9F0A86897D7}.Release|Any CPU.Build.0 = Debug|Any CPU
+		{E3AA43CE-8C05-42E3-A0DF-49157F064588}.Debug|Any CPU.ActiveCfg = Debug
+		{E3AA43CE-8C05-42E3-A0DF-49157F064588}.Release|Any CPU.ActiveCfg = Release
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
-	GlobalSection(SolutionConfigurationPlatforms) = preSolution
-		Debug|Any CPU = Debug|Any CPU
-		Release|Any CPU = Release|Any CPU
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {2D6CC34D-FA0A-41AE-930E-58CE6136394D}
 	EndGlobalSection
 EndGlobal
