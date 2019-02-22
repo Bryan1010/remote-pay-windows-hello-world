@@ -7,8 +7,11 @@ using System.Threading;
 
 namespace remote_pay_windows_hello_world
 {
-    class Program
+    public class Program
     {
+
+        public static bool isBusy = false;
+
         static void Main(string[] args)
         {
             string startFilePath = "c:/clover/SaleRequest.txt";
@@ -18,19 +21,21 @@ namespace remote_pay_windows_hello_world
 
 
             ICloverConnector cloverConnector;
-            CloverDeviceConfiguration USBConfig = new USBCloverDeviceConfiguration("__deviceID__", "com.Fromuth.tech", false, 1);
+            CloverDeviceConfiguration USBConfig = new USBCloverDeviceConfiguration("__deviceID__", "com.Fromuth.BC.tech", false, 1);
             cloverConnector = new CloverConnector(USBConfig);
             cloverConnector.AddCloverConnectorListener(new YourListener(cloverConnector));
             cloverConnector.InitializeConnection();
 
-            DateTime timeStamp = DateTime.Now;
+            
 
+            DateTime timeStamp = DateTime.Now;
 
             Thread.Sleep(5000);
             do
             {
-                if (cloverConnector.IsReady)
+                if (cloverConnector.IsReady && !isBusy)
                 {
+                    
                     //output a clover isConnected file
                     if (File.Exists("c:/clover/isConnected.txt"))
                     {
@@ -44,11 +49,13 @@ namespace remote_pay_windows_hello_world
 
 
                     //If the SaleRequest is made, proceed, else keep repeatig loop.
-                    if (File.Exists(startFilePath))
+                    if (File.Exists(startFilePath) && !isBusy)
                     {
+                        isBusy = true;
 
                         string startFileText = File.ReadAllText(startFilePath);
-                        File.Delete(startFilePath);
+                        //File.Delete(startFilePath);
+                        //File.Move(startFilePath, "c:/clover/clover-request-sale-file.txt");
                         string[] startFileContent = startFileText.Split('\t');
                         switch (startFileContent[0].ToLower())
                         {
@@ -101,11 +108,11 @@ namespace remote_pay_windows_hello_world
 
                         }
 
-                        File.Delete(startFilePath);
+                        //File.Delete(startFilePath);
 
 
                     }
-                    Thread.Sleep(3000);
+                    Thread.Sleep(5000);
                 }
             } while (true);
         }
@@ -129,7 +136,7 @@ namespace remote_pay_windows_hello_world
             sarequest.ApproveOfflinePaymentWithoutPrompt = true;
             sarequest.AllowOfflinePayment = true;
             
-            cloverConnector.Sale(sarequest);
+             cloverConnector.Sale(sarequest);
             
         }
 
@@ -208,6 +215,7 @@ namespace remote_pay_windows_hello_world
         class YourListener : DefaultCloverConnectorListener
         {
             public string output = "";
+            string startFilePath = "c:/clover/SaleRequest.txt";
             public const string SaleFilePath = "c:/clover/sale.txt";
             public const string signatureApproveRequestFilePath = "c:/clover/SignatureApproveRequest.txt";
             public bool hasSignature = false;
@@ -265,63 +273,65 @@ namespace remote_pay_windows_hello_world
             //Accepting the signature from the client
             public  void verifySignature(VerifySignatureRequest request, string path)
             {
+                request.Accept();
                 //validating the file for signature validation
-                bool flag = true;
-                while (flag)
-                {
+                bool flag = false;
+                //while (flag)
+                //{
 
-                    if (File.Exists(path))
-                    {
-                        string[] signatureResponse = File.ReadAllText(path).Split('\t');
-                        switch (signatureResponse[0])
-                        {
-                            case "Accept":
-                            case "accept":
-                            case "ACCEPT":
-                                {
-                                    request.Accept();
-                                    flag = false;
-                                    File.Delete(path);
-                                    break;
-                                }
-                            case "Reject":
-                            case "reject":
-                            case "REJECT":
-                                {
-                                    request.Reject();
-                                    File.Delete(path);
-                                    flag = false;
-                                    break;
-                                }
-                            default:
-                                {
-                                    cloverConnector.ShowMessage("Invalid Response");
-                                    Console.WriteLine("Invalid Response");
-                                    flag = false;
-                                    break;
-                                }
-                        }
-                    }
-                }
+                //    if (File.Exists(path))
+                //    {
+                //        string[] signatureResponse = File.ReadAllText(path).Split('\t');
+                //        switch (signatureResponse[0])
+                //        {
+                //            case "Accept":
+                //            case "accept":
+                //            case "ACCEPT":
+                //                {
+                //                    request.Accept();
+                //                    flag = false;
+                //                    File.Delete(path);
+                //                    break;
+                //                }
+                //            case "Reject":
+                //            case "reject":
+                //            case "REJECT":
+                //                {
+                //                    request.Reject();
+                //                    File.Delete(path);
+                //                    flag = false;
+                //                    break;
+                //                }
+                //            default:
+                //                {
+                //                    cloverConnector.ShowMessage("Invalid Response");
+                //                    Console.WriteLine("Invalid Response");
+                //                    flag = false;
+                //                    break;
+                //                }
+                //        }
+                //    }
+                //}
             }
 
-            
+
 
 
             public override void OnSaleResponse(SaleResponse response)
             {
                 string cloverMessage = "";
                 output = "";
-                if (response.Success )
+                
+                if (response.Success)
                 {
                     // payment was successful
                     // do something with response.Payment
                     output = "APPROVED\t" + response.Payment.amount + "\t" + response.Payment.id + "\t" + response.Payment.order.id + "\t";
                     cloverMessage = "TRANSACTION APPROVED";
                 }
-                else 
+                else
                 {
-                    output = "FAILED\t" + response.Result + "\t";
+                    output = "FAILED\t" + response.Result + "\t" + response.Message;
                     cloverMessage = "TRANSACTION " + response.Result;
                 }
                 if (deviceOffline)
@@ -329,16 +339,24 @@ namespace remote_pay_windows_hello_world
                     output = "FAILED\tOFFLINE\t";
                     cloverMessage = "TRANSACTION FAILED:\nDEVICE OFFLINE";
                 }
+
+
+
+                    if (!String.IsNullOrEmpty(output))
+                    {
+                        if (!hasSignature)
+                            output += "NONE\t";
+
+                        File.WriteAllText(SaleFilePath, output);
+
+                        File.Delete(startFilePath);
+                    }
+                    cloverConnector.ShowMessage(cloverMessage);
+                    Thread.Sleep(3000);
+                    cloverConnector.ShowWelcomeScreen();
+                    hasSignature = false;
+                    isBusy = false;
                 
-
-                if (!hasSignature)
-                    output += "NONE\t";
-
-                File.WriteAllText(SaleFilePath, output);
-                cloverConnector.ShowMessage( cloverMessage );
-                Thread.Sleep(2500);
-                cloverConnector.ShowWelcomeScreen();
-                hasSignature = false;
             }
 
             
@@ -365,8 +383,10 @@ namespace remote_pay_windows_hello_world
 
                 File.WriteAllText(SaleFilePath, output);
                 cloverConnector.ShowMessage("REFUND " + response.Result);
+                File.Delete(startFilePath);
                 Thread.Sleep(2000);
                 hasSignature = false;
+                isBusy = false;
                 cloverConnector.ShowWelcomeScreen();
             }
             
@@ -391,8 +411,10 @@ namespace remote_pay_windows_hello_world
 
                 File.WriteAllText(SaleFilePath, output);
                 cloverConnector.ShowMessage("TRANSACTION " + response.Result);
-                Thread.Sleep(1800);
+                File.Delete(startFilePath);
+                Thread.Sleep(3000);
                 hasSignature = false;
+                isBusy = false;
                 cloverConnector.ShowWelcomeScreen();
             }
 
@@ -409,5 +431,12 @@ namespace remote_pay_windows_hello_world
                 File.WriteAllText("c:/clover/notConnected.txt", DateTime.Now.ToString());
             }
         }
+    }
+
+    class clover_frm
+    {
+        public bool IsBusy { get; set; }
+
+        public clover_frm() { }
     }
 }

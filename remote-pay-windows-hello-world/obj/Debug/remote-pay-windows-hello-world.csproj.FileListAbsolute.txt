@@ -47,4 +47,4 @@ C:\Users\bryanc\Desktop\dev\remote-pay-windows-hello-world\remote-pay-windows-he
 C:\Users\bryanc\Desktop\dev\remote-pay-windows-hello-world\remote-pay-windows-hello-world\obj\Debug\remote-pay-windows-hello-world.csproj.CopyComplete
 C:\Users\bryanc\Desktop\dev\remote-pay-windows-hello-world\remote-pay-windows-hello-world\obj\Debug\nona_clover_integration.exe
 C:\Users\bryanc\Desktop\dev\remote-pay-windows-hello-world\remote-pay-windows-hello-world\obj\Debug\nona_clover_integration.pdb
-C:\Users\bryanc\Desktop\dev\remote-pay-windows-hello-world\remote-pay-windows-hello-world\obj\Debug\remote-pay-windows-hello-world.csprojResolveAssemblyReference.cache
+C:\Users\bryanc\Desktop\dev\remote-pay-windows-hello-world\remote-pay-windows-hello-world\bin\Debug\Newtonsoft.Json.dll
