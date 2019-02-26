@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Text;
 using com.clover.remote.order;
 using com.clover.remotepay.sdk;
 using com.clover.remotepay.transport;
@@ -11,6 +12,7 @@ namespace remote_pay_windows_hello_world
     {
 
         public static bool isBusy = false;
+        
 
         static void Main(string[] args)
         {
@@ -26,7 +28,8 @@ namespace remote_pay_windows_hello_world
             cloverConnector.AddCloverConnectorListener(new YourListener(cloverConnector));
             cloverConnector.InitializeConnection();
 
-            
+            Logging log = new Logging("CloverLog");
+            log.WriteMessage("Clover Program Started");
 
             DateTime timeStamp = DateTime.Now;
 
@@ -35,86 +38,105 @@ namespace remote_pay_windows_hello_world
             {
                 if (cloverConnector.IsReady && !isBusy)
                 {
-                    
-                    //output a clover isConnected file
-                    if (File.Exists("c:/clover/isConnected.txt"))
-                    {
-                        File.WriteAllText("c:/clover/isConnected.txt", DateTime.Now.ToString());
-                    }
-                    else
-                    {
-                        File.Create("c:/clover/isConnected.txt");
-                        File.WriteAllText("c:/clover/isConnected.txt", DateTime.Now.ToString());
-                    }
 
-
-                    //If the SaleRequest is made, proceed, else keep repeatig loop.
-                    if (File.Exists(startFilePath) && !isBusy)
+                    try
                     {
-                        isBusy = true;
-
-                        string startFileText = File.ReadAllText(startFilePath);
-                        //File.Delete(startFilePath);
-                        //File.Move(startFilePath, "c:/clover/clover-request-sale-file.txt");
-                        string[] startFileContent = startFileText.Split('\t');
-                        switch (startFileContent[0].ToLower())
+                        //output a clover isConnected file
+                        if (File.Exists("c:/clover/isConnected.txt"))
                         {
-                            case "SALE":
-                            case "Sale":
-                            case "sale":
-                                {
-                                    //StartOrder(cloverConnector);
-                                    StartSale(cloverConnector, startFileContent[1], Int32.Parse(startFileContent[2]));
-                                    break;
-                                }
-                            case "mrefund":
-                            case "MREFUND":
-                            case "MRefund":
-                            case "refund":
-                                {
-                                    StartRefund(cloverConnector, startFileContent[1], Int32.Parse(startFileContent[2]));
-                                    break;
-                                }
-                            case "fdrefund":
-                            case "FDREFUND":
-                            case "FDRefund":
-                                {
-                                    StartDirectRefund(cloverConnector, startFileContent[1], startFileContent[2]);
-                                    break;
-                                }
-                            case "pdrefund":
-                            case "PDREFUND":
-                            case "PDRefund":
-                                {
-                                    StartDirectRefund(cloverConnector, startFileContent[1], startFileContent[2], Int32.Parse(startFileContent[3]));
-                                    break;
-                                }
-                            case "cancel":
-                            case "CANCEL":
-                            case "Cancel":
-                                {
-                                    cloverConnector.ShowMessage("Transaction Canceled by the cashier.");
-                                    Thread.Sleep(1500);
-                                    cloverConnector.ShowWelcomeScreen();
-                                    break;
-                                }
-                            default:
-                                {
-                                    cloverConnector.ShowMessage("Invalid Response");
-                                    Thread.Sleep(3000);
-                                    cloverConnector.ShowWelcomeScreen();
-                                    break; 
-                                }
-
+                            File.WriteAllText("c:/clover/isConnected.txt", DateTime.Now.ToString());
+                        }
+                        else
+                        {
+                            File.Create("c:/clover/isConnected.txt");
+                            File.WriteAllText("c:/clover/isConnected.txt", DateTime.Now.ToString());
                         }
 
-                        //File.Delete(startFilePath);
 
+                        //If the SaleRequest is made, proceed, else keep repeatig loop.
+                        if (File.Exists(startFilePath) && !isBusy)
+                        {
+                            isBusy = true;
+
+                            string startFileText = File.ReadAllText(startFilePath);
+                            //File.Delete(startFilePath);
+                            //File.Move(startFilePath, "c:/clover/clover-request-sale-file.txt");
+                            string[] startFileContent = startFileText.Split('\t');
+                            switch (startFileContent[0].ToLower())
+                            {
+                                case "SALE":
+                                case "Sale":
+                                case "sale":
+                                    {
+                                        //StartOrder(cloverConnector);
+                                        StartSale(cloverConnector, startFileContent[1], Int32.Parse(startFileContent[2]));
+                                        break;
+                                    }
+                                case "mrefund":
+                                case "MREFUND":
+                                case "MRefund":
+                                case "refund":
+                                    {
+                                        StartRefund(cloverConnector, startFileContent[1], Int32.Parse(startFileContent[2]));
+                                        break;
+                                    }
+                                case "fdrefund":
+                                case "FDREFUND":
+                                case "FDRefund":
+                                    {
+                                        StartDirectRefund(cloverConnector, startFileContent[1], startFileContent[2]);
+                                        break;
+                                    }
+                                case "pdrefund":
+                                case "PDREFUND":
+                                case "PDRefund":
+                                    {
+                                        StartDirectRefund(cloverConnector, startFileContent[1], startFileContent[2], Int32.Parse(startFileContent[3]));
+                                        break;
+                                    }
+                                case "cancel":
+                                case "CANCEL":
+                                case "Cancel":
+                                    {
+                                        cloverConnector.ShowMessage("Transaction Canceled by the cashier.");
+                                        Thread.Sleep(1500);
+                                        cloverConnector.ShowWelcomeScreen();
+                                        break;
+                                    }
+                                default:
+                                    {
+                                        cloverConnector.ShowMessage("Invalid Response");
+                                        Thread.Sleep(3000);
+                                        cloverConnector.ShowWelcomeScreen();
+                                        break;
+                                    }
+
+                            }
+
+                            //File.Delete(startFilePath);
+
+
+                        }
+                        Thread.Sleep(5000);
+                    }catch(Exception ex)
+                    {
+                        Console.WriteLine(ex.Message);
+                        log.WriteError(ex.Message);
+                        isBusy = false;
+                        
+                        Thread.Sleep(5000);
 
                     }
-                    Thread.Sleep(5000);
                 }
             } while (true);
+        }
+
+        public static void WriteMessage(TextWriter log_writer,string FileName,string message)
+        {
+            
+            log_writer.WriteLine("# " + DateTime.Now.ToLongTimeString() + " " + message);
+            log_writer.WriteLine();
+            log_writer.Close();
         }
 
         public static void StartSale(ICloverConnector cloverConnector, string invNum, int amt)
@@ -433,10 +455,40 @@ namespace remote_pay_windows_hello_world
         }
     }
 
-    class clover_frm
+    public class Logging
     {
-        public bool IsBusy { get; set; }
+        TextWriter log_writer;
+        string Filename = "";
 
-        public clover_frm() { }
+        public Logging(string logname)
+        {
+            DateTime d = DateTime.Now;
+            Filename = "C:/clover/logs/" + logname + "_" + d.ToString("yyyy") + "_" + d.ToString("MM") + "_" + d.ToString("dd") +
+                "_" + d.ToString("hh") + "_" + d.ToString("mm") + "_" + d.ToString("ss") + ".txt";
+
+            if (!File.Exists("C:/clover/logs/"))
+            {
+                Directory.CreateDirectory("C:/clover/logs/");
+            }
+        }
+
+        public void WriteMessage(string message)
+        {
+            log_writer = new StreamWriter(Filename, true);
+            log_writer.WriteLine("# " + DateTime.Now.ToLongTimeString() + " " + message);
+            log_writer.WriteLine();
+            log_writer.Close();
+        }
+
+        public void WriteError(string message)
+        {
+            log_writer = new StreamWriter(Filename, true);
+            log_writer.WriteLine("##############");
+            log_writer.WriteLine("# ERROR " + DateTime.Now.ToLongTimeString() + " " + message);
+            log_writer.WriteLine("##############");
+            log_writer.WriteLine();
+            log_writer.Close();
+        }
+
     }
 }

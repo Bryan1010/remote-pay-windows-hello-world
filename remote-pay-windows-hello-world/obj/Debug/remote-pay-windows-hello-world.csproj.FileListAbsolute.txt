@@ -48,3 +48,8 @@ C:\Users\bryanc\Desktop\dev\remote-pay-windows-hello-world\remote-pay-windows-he
 C:\Users\bryanc\Desktop\dev\remote-pay-windows-hello-world\remote-pay-windows-hello-world\obj\Debug\nona_clover_integration.exe
 C:\Users\bryanc\Desktop\dev\remote-pay-windows-hello-world\remote-pay-windows-hello-world\obj\Debug\nona_clover_integration.pdb
 C:\Users\bryanc\Desktop\dev\remote-pay-windows-hello-world\remote-pay-windows-hello-world\bin\Debug\Newtonsoft.Json.dll
+C:\Users\bryanc\Desktop\dev\remote-pay-windows-hello-world\remote-pay-windows-hello-world\bin\Debug\CloverConnector.dll
+C:\Users\bryanc\Desktop\dev\remote-pay-windows-hello-world\remote-pay-windows-hello-world\bin\Debug\CloverWindowsSDK.dll
+C:\Users\bryanc\Desktop\dev\remote-pay-windows-hello-world\remote-pay-windows-hello-world\bin\Debug\CloverWindowsTransport.dll
+C:\Users\bryanc\Desktop\dev\remote-pay-windows-hello-world\remote-pay-windows-hello-world\bin\Debug\LibUsbDotNet.dll
+C:\Users\bryanc\Desktop\dev\remote-pay-windows-hello-world\remote-pay-windows-hello-world\bin\Debug\WebSocket4Net.dll
